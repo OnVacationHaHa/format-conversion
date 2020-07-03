@@ -4,11 +4,14 @@ path = os.getcwd()
 files = os.listdir(path)
 node_path = None
 net_path = None
+trips_path = None
 for f in files:
     if '_node' in f and f.endswith('.tntp'):
         node_path = f
     if '_net' in f and f.endswith('.tntp'):
         net_path = f
+    if '_trips' in f and f.endswith('.tntp'):
+        trips_path = f
 with open(node_path, 'r', encoding='utf-8') as f:
     nodes = f.readlines()
     del nodes[0]
@@ -43,5 +46,34 @@ with open('road_link.csv', 'w', newline='') as f:
         now_link.extend([None, road_link_id, int(l[0]), int(l[1]), int(l[9]), float(l[3]), 1, float(l[7]), int(l[2])])
         road_link_id += 1
         writer.writerow(now_link)
+f.close()
+del links
+with open(trips_path, 'r', encoding='utf-8') as f:
+    for i in range(11):
+        f.readline()
+    lines = f.readlines()
+    ODs = []
+    for i in range(len(lines)):
+        if lines[i][0:6] == "Origin":
+            line=lines[i].replace(' ','')
+            line=line.replace('\n','')
+            line = line.replace('Origin', '')
+            O = int(line)
+        else:
+            lines[i]=lines[i].replace(' ','')
+            now_line=lines[i].split(';')
+            del now_line[len(now_line)-1]
+            newOD=[]
+            for D in now_line:
+                D_and_value=D.split(':')
+                newOD.append([O,int(D_and_value[0]),float(D_and_value[1])])
+            ODs.extend(newOD)
+f.close()
+with open('demand.csv','w', newline='') as f:
+    header=['o','d','value']
+    writer=csv.writer(f)
+    writer.writerow(header)
+    for OD in ODs:
+        writer.writerow(OD)
 f.close()
 print('转换完成')
