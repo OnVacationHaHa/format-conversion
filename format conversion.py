@@ -24,7 +24,7 @@ with open('node.csv', 'w', newline='') as f:
     writer = csv.writer(f)
     writer.writerow(header)
     for n in nodes:
-        writer.writerow([None, int(n[0]), int(n[1]), int(n[2])])
+        writer.writerow([None, int(n[0]), float(n[1]), float(n[2])])
 f.close()
 del nodes
 with open(net_path, 'r', encoding='utf-8') as f:
@@ -37,13 +37,13 @@ with open(net_path, 'r', encoding='utf-8') as f:
         del links[i][10]
 f.close()
 with open('road_link.csv', 'w', newline='') as f:
-    header = ['name', 'road_link_id', 'from_node_id', 'to_node_id', 'link_type', 'length', 'lanes', 'free_speed', 'capacity']
+    header = ['name', 'road_link_id', 'from_node_id', 'to_node_id','facility_type','link_type', 'length', 'lanes', 'free_speed', 'capacity']
     writer = csv.writer(f)
     writer.writerow(header)
     road_link_id = 1
     for l in links:
         now_link = []
-        now_link.extend([None, road_link_id, int(l[0]), int(l[1]), int(l[9]), float(l[3]), 1, float(l[7]), int(l[2])])
+        now_link.extend([None, road_link_id, int(l[0]), int(l[1]),'Highway' ,int(l[9]), float(l[3]), 1, float(l[7]), float(l[2])])
         road_link_id += 1
         writer.writerow(now_link)
 f.close()
